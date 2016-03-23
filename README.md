@@ -5,5 +5,6 @@ Run
 ---
 ```
 pip install scrapy
-scrapy runspider mashapespider.py  # --nolog
+# From project's top level directory:
+scrapy crawl Mashape # --nolog
 ```
