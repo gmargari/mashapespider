@@ -67,11 +67,19 @@ class MashapeWebSpider(scrapy.Spider):
     # parse_api_directory_page ()
     #===========================================================================
     def parse_api_directory_page(self, response):
+        table_rows = response.xpath("//tr[@class='list-api-row']")
+        # Page does not contain an API, thus is a 404
+        if (table_rows == []):
+            return
+
         # For each API link found in current directory page call parse_api_page
-        for tr in response.xpath("//tr[@class='list-api-row']"):
+        for tr in table_rows:
             url = tr.xpath("td[2]/a/@href").extract()[0]
             fullurl = response.urljoin(url)
             yield scrapy.Request(fullurl, self.parse_api_page)
+
+        # Recursive call this function for the next page
+        yield scrapy.Request(self.get_next_url(response.url), self.parse_api_directory_page)
 
     #===========================================================================
     # parse_api_page ()
@@ -112,3 +120,11 @@ class MashapeWebSpider(scrapy.Spider):
                 dictionary[varname] = dom_element.find_elements_by_xpath(xpath)[0].text
             except:
                 pass
+
+    #===========================================================================
+    # get_next_url ()
+    #===========================================================================
+    def get_next_url(self, url):
+        pos = url.rfind("=")
+        num = int(url[pos+1:])
+        return url[:pos+1] + str(num + 1)
