@@ -42,8 +42,16 @@ class MashapeWebSpider(scrapy.Spider):
             'response_example': ".//pre[contains(@class, 'model-preview')]/div[@class='perfectscroll-container']",
         }
 
-        self.params_xpath = ".//div[@class='request']/div[contains(@class, 'parameter') and contains(@class, 'typed')]"
-        self.param_varnames_xpaths = {
+        # Find all parameter divs after <h4>URL Parameters</h4> and before the next h4
+        self.url_params_xpath = ".//div[@class='request']/h4[contains(., 'URL Parameters')][1]/following-sibling::div[contains(@class, 'parameter') and contains(@class, 'typed')][count(preceding-sibling::h4)=1]"
+        self.url_param_varnames_xpaths = {
+            'name': ".//span[contains(@class, 'name')]",
+            'type': ".//span[contains(@class, 'type')]",
+            'description': ".//p",
+        }
+
+        self.body_params_xpath = ".//div[@class='request']/h4[contains(., 'Form Encoded Parameters')][1]/following-sibling::div[contains(@class, 'parameter') and contains(@class, 'typed')]"
+        self.body_param_varnames_xpaths = {
             'name': ".//span[contains(@class, 'name')]",
             'type': ".//span[contains(@class, 'type')]",
             'description': ".//p",
@@ -104,13 +112,22 @@ class MashapeWebSpider(scrapy.Spider):
             endpoint = dict()
             self.add_elements_to_dict_if_existing(endpoint, elem_endpoint, self.endpoint_varnames_xpaths)
 
-            # Get endpoint params
-            endpoint['params'] = list()
-            for elem_param in elem_endpoint.find_elements_by_xpath(self.params_xpath):
+            # Get endpoint URL params
+            endpoint['url_params'] = list()
+            for elem_param in elem_endpoint.find_elements_by_xpath(self.url_params_xpath):
                 param = dict()
-                self.add_elements_to_dict_if_existing(param, elem_param, self.param_varnames_xpaths)
+                self.add_elements_to_dict_if_existing(param, elem_param, self.url_param_varnames_xpaths)
                 param['required'] = "true" if "required" in elem_param.get_attribute("class") else "false"
-                endpoint['params'].append(param)
+                endpoint['url_params'].append(param)
+
+            # Get endpoint body params
+            endpoint['body_params'] = list()
+            for elem_param in elem_endpoint.find_elements_by_xpath(self.body_params_xpath):
+                param = dict()
+                self.add_elements_to_dict_if_existing(param, elem_param, self.body_param_varnames_xpaths)
+                param['required'] = "true" if "required" in elem_param.get_attribute("class") else "false"
+                endpoint['body_params'].append(param)
+
             api['endpoints'].append(endpoint)
 
         print json.dumps(api, sort_keys=True)
