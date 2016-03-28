@@ -128,6 +128,11 @@ class MashapeWebSpider(scrapy.Spider):
                 param['required'] = "true" if "required" in elem_param.get_attribute("class") else "false"
                 endpoint['body_params'].append(param)
 
+            # Remove empty lists (basically, empty url_params and body_params)
+            for key in endpoint.keys():
+                if (isinstance(endpoint[key], list) and endpoint[key] == []):
+                    endpoint.pop(key, None)
+
             api['endpoints'].append(endpoint)
 
         print json.dumps(api, sort_keys=True)
