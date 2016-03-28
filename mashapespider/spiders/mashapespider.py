@@ -36,6 +36,9 @@ class MashapeWebSpider(scrapy.Spider):
             'method': ".//div[@class='response']/pre/div/span[@class='verb']",
             'host': ".//div[@class='response']/pre/div/span/span[@class='host']",
             'route': ".//div[@class='response']/pre/div/span/span[@class='route']",
+            'response': ".//span[contains(@class, 'code')]",
+            'response_name': ".//span[@class='name truncate']",
+            'response_example': ".//pre[contains(@class, 'model-preview')]/div[@class='perfectscroll-container']",
         }
 
         self.params_xpath = ".//div[@class='request']/div[contains(@class, 'parameter') and contains(@class, 'typed')]"
