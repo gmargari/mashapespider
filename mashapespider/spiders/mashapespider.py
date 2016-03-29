@@ -11,7 +11,24 @@ from scrapy.xlib.pydispatch import dispatcher
 class MashapeWebSpider(scrapy.Spider):
     name = 'Mashape'
     start_urls = [
+        'https://market.mashape.com/explore?tags=Tools&page=1',
         'https://market.mashape.com/explore?tags=Education&page=1',
+        'https://market.mashape.com/explore?tags=Devices&page=1',
+        'https://market.mashape.com/explore?tags=Finance&page=1',
+        'https://market.mashape.com/explore?tags=Advertising&page=1',
+        'https://market.mashape.com/explore?tags=Commerce&page=1',
+        'https://market.mashape.com/explore?tags=Other&page=1',
+        'https://market.mashape.com/explore?tags=Location&page=1',
+        'https://market.mashape.com/explore?tags=Business&page=1',
+        'https://market.mashape.com/explore?tags=Social&page=1',
+        'https://market.mashape.com/explore?tags=Communication&page=1',
+        'https://market.mashape.com/explore?tags=Entertainment&page=1',
+        'https://market.mashape.com/explore?tags=Media&page=1',
+        'https://market.mashape.com/explore?tags=Medical&page=1',
+        'https://market.mashape.com/explore?tags=Sports&page=1',
+        'https://market.mashape.com/explore?tags=Reward&page=1',
+        'https://market.mashape.com/explore?tags=Data&page=1',
+        'https://market.mashape.com/explore?tags=Travel&page=1',
     ]
 
     # scrapy parameter: seconds between successive page crawls
