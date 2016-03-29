@@ -46,7 +46,17 @@ class MashapeWebSpider(scrapy.Spider):
             'description': "//span[contains(@class,'more-contaner')]",
         }
 
-        self.endpoints_xpath = "//section[@class='endpoint']"
+        self.auth_xpath = ".//div[contains(@class, 'parameter') and contains(@class, 'authentication')]"
+        self.auth_varnames_xpaths = {
+            'name': ".//div[1]/span",
+            'description': ".//div[2]/span",
+        }
+        self.auth_mashape_default_headers = {
+            'name': "X-Mashape-Key",
+            'description': "Sign up to Mashape.com to get your key",
+        }
+
+        self.endpoints_xpath = "//section[@class='endpoint' and @id]"
         self.endpoint_varnames_xpaths = {
             'name': ".//div[@class='request']/div[@class='endpoint-name']/span",
             'description': ".//div[@class='request']/div[@class='description']",
@@ -120,6 +130,14 @@ class MashapeWebSpider(scrapy.Spider):
         api = dict()
         api['mashape_url'] = response.url
         self.add_elements_to_dict_if_existing(api, self.browser, self.api_varnames_xpaths)
+
+        # Get authentication info
+        api['auth_headers'] = list()
+        for elem_param in self.browser.find_elements_by_xpath(self.auth_xpath):
+            param = dict()
+            self.add_elements_to_dict_if_existing(param, elem_param, self.auth_varnames_xpaths)
+            api['auth_headers'].append(param)
+        api['auth_headers'].append(self.auth_mashape_default_headers)
 
         # Get API endpoints
         api['endpoints'] = list()
