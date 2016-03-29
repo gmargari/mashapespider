@@ -32,7 +32,7 @@ class MashapeWebSpider(scrapy.Spider):
     ]
 
     # scrapy parameter: seconds between successive page crawls
-    download_delay = 0.25
+    #download_delay = 0.25  # Disabled since each request already required multiple seconds
 
     #===========================================================================
     # __init__ ()
@@ -158,7 +158,9 @@ class MashapeWebSpider(scrapy.Spider):
     # add_elements_to_dict_if_existing ()
     #===========================================================================
     def add_elements_to_dict_if_existing(self, dictionary, dom_element, varnames_xpaths):
-        for varname, xpath in varnames_xpaths.items():
+        for key in varnames_xpaths.keys():
+            varname = key
+            xpath = varnames_xpaths[key]
             try:
                 dictionary[varname] = dom_element.find_elements_by_xpath(xpath)[0].text
             except:
