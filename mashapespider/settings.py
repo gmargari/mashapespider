@@ -15,6 +15,8 @@ SPIDER_MODULES = ['mashapespider.spiders']
 NEWSPIDER_MODULE = 'mashapespider.spiders'
 
 
+LOG_LEVEL = "WARNING"
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'mashapespider (+http://www.yourdomain.com)'
 
