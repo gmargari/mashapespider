@@ -90,10 +90,15 @@ class MashapeWebSpider(scrapy.Spider):
         # Function to be called when spider terminates
         dispatcher.connect(self.quit, signals.spider_closed)
 
+        self.apis_extracted = 0
+
+        print "["
+
     #===========================================================================
     # quit ()
     #===========================================================================
     def quit(self):
+        print "]"
         self.browser.quit()
 
     #===========================================================================
@@ -170,7 +175,8 @@ class MashapeWebSpider(scrapy.Spider):
 
             api['endpoints'].append(endpoint)
 
-        print json.dumps(api, sort_keys=True)
+        print "%s%s" % ("," if self.apis_extracted > 0 else "", json.dumps(api, sort_keys=True))
+        self.apis_extracted += 1
 
     #===========================================================================
     # add_elements_to_dict_if_existing ()
