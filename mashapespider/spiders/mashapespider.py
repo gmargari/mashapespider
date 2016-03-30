@@ -221,12 +221,13 @@ class MashapeWebSpider(scrapy.Spider):
                 param['required'] = "true" if "required" in elem_param.get_attribute("class") else "false"
                 endpoint['body_params'].append(param)
 
-            # Remove empty lists (basically, empty url_params, payload and body_params)
-            for key in endpoint.keys():
-                if (isinstance(endpoint[key], list) and endpoint[key] == []):
-                    endpoint.pop(key, None)
+            # Remove empty lists
+            self.remove_empty_lists(endpoint)
 
             api['endpoints'].append(endpoint)
+
+        # Remove empty lists
+        self.remove_empty_lists(api)
 
         print "%s%s" % ("," if self.apis_extracted > 0 else "", json.dumps(api, sort_keys=True))
         self.apis_extracted += 1
@@ -260,3 +261,11 @@ class MashapeWebSpider(scrapy.Spider):
         pos = url.rfind("=")
         num = int(url[pos+1:])
         return url[:pos+1] + str(num + 1)
+
+    #===========================================================================
+    # remove_empty_lists ()
+    #===========================================================================
+    def remove_empty_lists(self, dictionary):
+        for key in dictionary.keys():
+            if (isinstance(dictionary[key], list) and dictionary[key] == []):
+                dictionary.pop(key, None)
