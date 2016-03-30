@@ -44,7 +44,7 @@ class MashapeWebSpider(scrapy.Spider):
             'owner': "//div[contains(@class,'owner')]",
             'website': "//div[contains(@class,'website')]",
             'tags': "//div[contains(@class,'tags')]",
-            'description': "//span[contains(@class,'more-contaner')]",
+            'description': "//p[contains(@class,'description')]",
         }
 
         # All divs with class "parameter" and "authentication"
