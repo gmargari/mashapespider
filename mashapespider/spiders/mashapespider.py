@@ -92,7 +92,7 @@ class MashapeWebSpider(scrapy.Spider):
             'description': ".//p",
         }
 
-        # All parameter divs after <h4>URL Parameters</h4> and before the 2nd <h4> (Url params is always first <h4> within request div)
+        # All parameter divs after <h4>URL Parameters</h4> and before the 2nd <h4> (Url params is always the first <h4> within request div)
         self.url_params_xpath = ".//div[@class='request']/h4[contains(., 'URL Parameters')][1]/following-sibling::div[contains(@class, 'parameter') and contains(@class, 'typed')][count(preceding-sibling::h4)=1]"
         self.url_param_varnames_xpaths = {
             'name': ".//span[contains(@class, 'name')]",
@@ -109,7 +109,7 @@ class MashapeWebSpider(scrapy.Spider):
             'example': ".//pre[contains(@class, 'model-preview')]/div",
         }
 
-        # All parameter divs after <h4>Form Encoded Parameters</h4> (Form encoded is always last <h4> within request div)
+        # All parameter divs after <h4>Form Encoded Parameters</h4> (Form encoded params is always the last <h4> within request div)
         self.body_params_xpath = ".//div[@class='request']/h4[contains(., 'Form Encoded Parameters')][1]/following-sibling::div[contains(@class, 'parameter') and contains(@class, 'typed')]"
         self.body_param_varnames_xpaths = {
             'name': ".//span[contains(@class, 'name')]",
@@ -192,7 +192,7 @@ class MashapeWebSpider(scrapy.Spider):
             endpoint = dict()
             self.add_elements_to_dict_if_existing(endpoint, elem_endpoint, self.endpoint_varnames_xpaths)
 
-            # Get request payload params
+            # Get endpoint request payload params
             endpoint['payload'] = list()
             for elem_param in elem_endpoint.find_elements_by_xpath(self.request_payload_xpath):
                 param = dict()
