@@ -47,12 +47,21 @@ class MashapeWebSpider(scrapy.Spider):
             'description': "//p[contains(@class,'description')]",
         }
 
-        # All divs with class "parameter" and "authentication"
-        self.auth_xpath = ".//div[contains(@class, 'parameter') and contains(@class, 'authentication')]"
-        self.auth_varnames_xpaths = {
+        # Authentication parameters
+        self.auth_params_xpath = "//h4[contains(., 'Authentication parameters')]//following-sibling::div[contains(@class, 'parameter') and contains(@class, 'authentication')]"
+        self.auth_params_varnames_xpaths = {
             'name': ".//div[1]/span",
             'description': ".//div[2]/span",
         }
+
+        # Authentication headers
+        self.auth_headers_xpath = "//h4[contains(., 'Authentication headers')]//following-sibling::div[contains(@class, 'parameter') and contains(@class, 'authentication')]"
+        self.auth_headers_varnames_xpaths = {
+            'name': ".//div[1]/span",
+            'description': ".//div[2]/span",
+        }
+
+        # Default Mashape authentication headers
         self.auth_mashape_default_headers = {
             'name': "X-Mashape-Key",
             'description': "Sign up to Mashape.com to get your key",
@@ -151,12 +160,19 @@ class MashapeWebSpider(scrapy.Spider):
         api['mashape_url'] = response.url
         self.add_elements_to_dict_if_existing(api, self.browser, self.api_varnames_xpaths)
 
-        # Get authentication info
-        api['auth_headers'] = list()
-        for elem_param in self.browser.find_elements_by_xpath(self.auth_xpath):
+        # Get API authentication parameters
+        api['auth_params'] = list()
+        for elem_param in self.browser.find_elements_by_xpath(self.auth_params_xpath):
             param = dict()
-            self.add_elements_to_dict_if_existing(param, elem_param, self.auth_varnames_xpaths)
-            api['auth_headers'].append(param)
+            self.add_elements_to_dict_if_existing(param, elem_param, self.auth_params_varnames_xpaths)
+            api['auth_params'].append(param)
+
+        # Get API authentication headers
+        api['auth_headers'] = list()
+        for elem_param in self.browser.find_elements_by_xpath(self.auth_headers_xpath):
+            param = dict()
+            self.add_elements_to_dict_if_existing(param, elem_param, self.auth_headers_varnames_xpaths)
+            api['auth_params'].append(param)
         api['auth_headers'].append(self.auth_mashape_default_headers)
 
         # Get API endpoints
