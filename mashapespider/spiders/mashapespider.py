@@ -43,7 +43,7 @@ class MashapeWebSpider(scrapy.Spider):
             'name': "//h1[contains(@class,'name')]",
             'owner': "//div[contains(@class,'owner')]",
             'website': "//div[contains(@class,'website')]",
-            'tags': "//div[contains(@class,'tags')]",
+            'tags': [ "//div[contains(@class,'tags')]/a", "concat", ", " ],
             'description': "//p[contains(@class,'description')]",
         }
 
@@ -206,11 +206,21 @@ class MashapeWebSpider(scrapy.Spider):
     def add_elements_to_dict_if_existing(self, dictionary, dom_element, varnames_xpaths):
         for key in varnames_xpaths.keys():
             varname = key
-            xpath = varnames_xpaths[key]
-            try:
-                dictionary[varname] = dom_element.find_elements_by_xpath(xpath)[0].text
-            except:
-                pass
+            if (isinstance(varnames_xpaths[key], basestring)):
+                xpath = varnames_xpaths[key]
+                try:
+                    dictionary[varname] = dom_element.find_elements_by_xpath(xpath)[0].text
+                except:
+                    pass
+
+            elif (isinstance(varnames_xpaths[key], list)):
+                xpath = varnames_xpaths[key][0]
+                operation = varnames_xpaths[key][1]
+
+                if (operation == "concat"):
+                    delim = varnames_xpaths[key][2]
+                    if dom_element.find_elements_by_xpath(xpath):
+                        dictionary[varname] = delim.join(map(lambda x: x.text, dom_element.find_elements_by_xpath(xpath)))
 
     #===========================================================================
     # get_next_url ()
