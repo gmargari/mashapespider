@@ -45,6 +45,7 @@ class MashapeWebSpider(scrapy.Spider):
             'website': "//div[contains(@class,'website')]",
             'tags': [ "//div[contains(@class,'tags')]/a", "concat", ", " ],
             'description': "//p[contains(@class,'description')]",
+            'auth_info': "//div[@class='request'][1]/div[@class='authentication-details']//following-sibling::div[@class='description']",
         }
 
         # Authentication parameters
