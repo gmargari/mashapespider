@@ -77,6 +77,14 @@ class MashapeWebSpider(scrapy.Spider):
             'description': ".//p",
         }
 
+        self.request_payload_xpath = ".//div[@class='request']/h4[contains(., 'Request Payload')][1]/following-sibling::div[@class='parameter model']"
+        self.request_payload_varnames_xpaths = {
+            'name': ".//div[contains(@class, 'model-name')]/span[contains(@class,'name')]",
+            'type': ".//div[contains(@class, 'model-name')]/span[contains(@class,'code')]",
+            'description': ".//div[contains(@class, 'model-description')]/span",
+            'example': ".//pre[contains(@class, 'model-preview')]/div",
+        }
+
         self.body_params_xpath = ".//div[@class='request']/h4[contains(., 'Form Encoded Parameters')][1]/following-sibling::div[contains(@class, 'parameter') and contains(@class, 'typed')]"
         self.body_param_varnames_xpaths = {
             'name': ".//span[contains(@class, 'name')]",
@@ -151,6 +159,13 @@ class MashapeWebSpider(scrapy.Spider):
             # Get endpoint description
             endpoint = dict()
             self.add_elements_to_dict_if_existing(endpoint, elem_endpoint, self.endpoint_varnames_xpaths)
+
+            # Get request payload params
+            endpoint['payload'] = list()
+            for elem_param in elem_endpoint.find_elements_by_xpath(self.request_payload_xpath):
+                param = dict()
+                self.add_elements_to_dict_if_existing(param, elem_param, self.request_payload_varnames_xpaths)
+                endpoint['payload'].append(param)
 
             # Get endpoint URL params
             endpoint['url_params'] = list()
