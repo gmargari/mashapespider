@@ -7,6 +7,12 @@ import collections
 import traceback
 
 tab = '    '
+type_map = {
+    "JSON": "application/json",
+    "XML": "application/xml",
+    "TEXT": "text/plain",
+    "BINARY": "binary/octet-stream",
+}
 
 #===============================================================================
 # print_if_key_exists ()
@@ -29,6 +35,28 @@ def convert(data):
         return type(data)(map(convert, data))
     else:
         return data
+
+#===============================================================================
+# print_api_description ()
+#===============================================================================
+def print_api_description(api):
+    print '%stitle: %s' % (tab*0, api['name'])
+    print '%sbaseUri: %s' % (tab*0, api['endpoints'][0]['host'])
+    print '%sversion: %s' % (tab*0, '1.0')
+    print '%smashapeUrl: %s' % (tab*0, api['mashape_url'])
+    print_if_key_exists(tab*0, api, 'website')
+    print_if_key_exists(tab*0, api, 'tags')
+    print_if_key_exists(tab*0, api, 'owner')
+
+#===============================================================================
+# print_endpoint_description ()
+#===============================================================================
+def print_endpoint_description(endpoint):
+    print ''
+    print '%s%s:' % (tab*0, endpoint['route'])
+    print '%s%s:' % (tab*1, endpoint['method'].lower())
+    print '%sdisplayName: %s' % (tab*2, endpoint['name'])  # extra
+    print '%sdescription: %s' % (tab*2, endpoint['description'])
 
 #===============================================================================
 # print_params ()
@@ -62,23 +90,15 @@ def main():
                 if ('endpoints' not in api or api['endpoints'] == []):
                     continue
 
-                print '%stitle: %s' % (tab*0, api['name'])
-                print '%sbaseUri: %s' % (tab*0, api['endpoints'][0]['host'])
-                print '%sversion: %s' % (tab*0, '1.0')
-                print '%smashapeUrl: %s' % (tab*0, api['mashape_url'])
-                print_if_key_exists(tab*0, api, 'website')
-                print_if_key_exists(tab*0, api, 'tags')
-                print_if_key_exists(tab*0, api, 'owner')
+                print '#%RAML 0.8'
+                print ''
+                print_api_description(api)
 
                 for endpoint in api['endpoints']:
-                    print '%s%s:' % (tab*0, endpoint['route'])
-                    print '%s%s:' % (tab*1, endpoint['method'].lower())
-                    print '%sname: %s' % (tab*2, endpoint['name'])  # extra
-                    print '%sdescription: %s' % (tab*2, endpoint['description'])
+                    print_endpoint_description(endpoint)
 
                     # Split url params in query params and uri params
                     uri_param_names = re.findall(r'\{(.*?)\}', endpoint['route'])
-                    assert(uri_param_names == [] or 'url_params' in endpoint)
                     uri_params = []
                     query_params = []
                     if ('url_params' in endpoint):
