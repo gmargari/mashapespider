@@ -58,6 +58,10 @@ def main():
         apis = convert(apis)
         for api in apis:
             try:
+                # No endpoints, probably url was not parsed properly (e.g. page wasn't fully loaded when parsing started)
+                if ('endpoints' not in api or api['endpoints'] == []):
+                    continue
+
                 print '%stitle: %s' % (tab*0, api['name'])
                 print '%sbaseUri: %s' % (tab*0, api['endpoints'][0]['host'])
                 print '%sversion: %s' % (tab*0, '1.0')
