@@ -34,13 +34,14 @@ def convert(data):
 # print_params ()
 #===============================================================================
 def print_params(dictionary, title):
-    print '%s%s:' % (tab*2, title)
-    for param in dictionary:
-        print '%s%s:' % (tab*3, param['name'])
-        print '%stype: %s' % (tab*4, param['type'].lower())
-        print_if_key_exists(tab*4, param, 'description')
-        print_if_key_exists(tab*4, param, 'example')
-        print_if_key_exists(tab*4, param, 'required')
+    if len(dictionary) > 0:
+        print '%s%s:' % (tab*2, title)
+        for param in dictionary:
+            print '%s%s:' % (tab*3, param['name'])
+            print '%stype: %s' % (tab*4, param['type'].lower())
+            print_if_key_exists(tab*4, param, 'description')
+            print_if_key_exists(tab*4, param, 'example')
+            print_if_key_exists(tab*4, param, 'required')
 
 #===============================================================================
 # main ()
@@ -82,18 +83,15 @@ def main():
                             query_params = [ x for x in endpoint['url_params'] if x not in uri_params ]
                         else:
                             query_params = endpoint['url_params']
+                    assert(uri_param_names == [] or len(uri_param_names) == len(uri_params))
 
-                    if uri_params != []:
-                        print_params(uri_params, 'uriParameters')
+                    body_params = endpoint['body_params'] if 'body_params' in endpoint else []
+                    payload_params = endpoint['payload'] if 'payload' in endpoint else []
 
-                    if query_params != []:
-                        print_params(query_params, 'queryParameters')
-
-                    if 'payload' in endpoint:
-                        print_params(endpoint['payload'], 'bodyBinaryParameters')
-
-                    if 'body_params' in endpoint:
-                        print_params(endpoint['body_params'], 'bodyParameters')
+                    print_params(uri_params, 'uriParameters')
+                    print_params(query_params, 'queryParameters')
+                    print_params(payload_params, 'bodyBinaryParameters')  ## *** ## *** ## *** ## *** ## *** ##
+                    print_params(body_params, 'body')
 
                 print '========================================================='
             except:
