@@ -81,8 +81,8 @@ class MashapeWebSpider(scrapy.Spider):
             'curl_example': ".//div[@class='code-snippet']",
             'response': ".//div[@class='response']//div[@class='model-name']/span[contains(@class, 'code')] | " + \
                         ".//div[@class='response']//div[@class='model-name']/pre[contains(@class, 'code')]",
-            'response_name': ".//div[@class='response']/div[@class='model-name']/span[@class='name truncate']",
-            'response_example': ".//div[@class='response']/div[@class='model-name']/pre[contains(@class, 'model-preview')]/div[@class='perfectscroll-container']",
+            'response_name': ".//div[@class='response']//div[@class='model-name']/span[@class='name truncate']",
+            'response_example': ".//div[@class='response']//pre[contains(@class, 'model-preview')]",
         }
 
         # All parameter divs after <h4>Request Headers</h4> with class "parameter typed authorization"
