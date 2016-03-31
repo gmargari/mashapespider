@@ -59,6 +59,18 @@ def print_endpoint_description(endpoint):
     print '%sdescription: %s' % (tab*2, endpoint['description'])
 
 #===============================================================================
+# print_endpoint_response ()
+#===============================================================================
+def print_endpoint_response(endpoint):
+    if ('response' in endpoint):
+        print endpoint['response']
+        rcode, rtype = endpoint['response'].split(" / ")
+        print '%sresponses:' % (tab*2)
+        print '%s%s:' % (tab*3, rcode)
+        print '%sbody:' % (tab*4)
+        print '%s%s:' % (tab*5, type_map[rtype])
+
+#===============================================================================
 # print_params ()
 #===============================================================================
 def print_params(dictionary, title):
@@ -116,6 +128,8 @@ def main():
                     print_params(query_params, 'queryParameters')
                     print_params(payload_params, 'bodyBinaryParameters')  ## *** ## *** ## *** ## *** ## *** ##
                     print_params(body_params, 'body')
+
+                    print_endpoint_response(endpoint)
 
                 print '========================================================='
             except:
