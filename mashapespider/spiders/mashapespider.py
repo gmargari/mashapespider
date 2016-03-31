@@ -42,7 +42,7 @@ class MashapeWebSpider(scrapy.Spider):
         self.api_varnames_xpaths = {
             'name': "//h1[contains(@class,'name')]",
             'owner': "//div[contains(@class,'owner')]",
-            'website': "//div[contains(@class,'website')]",
+            'website': [ "//div[contains(@class,'website')]", "get_attribute", "href" ],
             'tags': [ "//div[contains(@class,'tags')]/a", "concat", ", " ],
             'description': "//p[contains(@class,'description')]",
             'auth_info': "//div[@class='request'][1]/div[@class='authentication-details']//following-sibling::div[@class='description']",
@@ -255,6 +255,11 @@ class MashapeWebSpider(scrapy.Spider):
                     delim = varnames_xpaths[key][2]
                     if dom_element.find_elements_by_xpath(xpath):
                         dictionary[varname] = delim.join(map(lambda x: x.text, dom_element.find_elements_by_xpath(xpath)))
+
+                if (operation == "get_attribute"):
+                    attr = varnames_xpaths[key][2]
+                    if dom_element.find_elements_by_xpath(xpath):
+                        dictionary[varname] = dom_element.find_elements_by_xpath(xpath)[0].get_attribute(attr)
 
     #===========================================================================
     # get_next_url ()
