@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import json
 import sys
 import re
@@ -19,7 +20,7 @@ type_map = {
 #===============================================================================
 def print_if_key_exists(space, dictionary, key):
     if (key in dictionary):
-        print '%s%s: %s' % (space, key, dictionary[key])
+        print('%s%s: %s' % (space, key, dictionary[key]))
         return True
     return False
 
@@ -40,10 +41,10 @@ def convert(data):
 # print_api_description ()
 #===============================================================================
 def print_api_description(api):
-    print '%stitle: %s' % (tab*0, api['name'])
-    print '%sbaseUri: %s' % (tab*0, api['endpoints'][0]['host'])
-    print '%sversion: %s' % (tab*0, '1.0')
-    print '%smashapeUrl: %s' % (tab*0, api['mashape_url'])
+    print('%stitle: %s' % (tab*0, api['name']))
+    print('%sbaseUri: %s' % (tab*0, api['endpoints'][0]['host']))
+    print('%sversion: %s' % (tab*0, '1.0'))
+    print('%smashapeUrl: %s' % (tab*0, api['mashape_url']))
     print_if_key_exists(tab*0, api, 'website')
     print_if_key_exists(tab*0, api, 'tags')
     print_if_key_exists(tab*0, api, 'owner')
@@ -52,33 +53,40 @@ def print_api_description(api):
 # print_endpoint_description ()
 #===============================================================================
 def print_endpoint_description(endpoint):
-    print ''
-    print '%s%s:' % (tab*0, endpoint['route'])
-    print '%s%s:' % (tab*1, endpoint['method'].lower())
-    print '%sdisplayName: %s' % (tab*2, endpoint['name'])  # extra
-    print '%sdescription: %s' % (tab*2, endpoint['description'])
+    print('')
+    print('%s%s:' % (tab*0, endpoint['route']))
+    print('%s%s:' % (tab*1, endpoint['method'].lower()))
+    print('%sdisplayName: %s' % (tab*2, endpoint['name']))  # extra
+    print('%sdescription: %s' % (tab*2, endpoint['description']))
 
 #===============================================================================
 # print_endpoint_response ()
 #===============================================================================
 def print_endpoint_response(endpoint):
     if ('response' in endpoint):
-        print endpoint['response']
         rcode, rtype = endpoint['response'].split(" / ")
-        print '%sresponses:' % (tab*2)
-        print '%s%s:' % (tab*3, rcode)
-        print '%sbody:' % (tab*4)
-        print '%s%s:' % (tab*5, type_map[rtype])
+        print('%sresponses:' % (tab*2))
+        print('%s%s:' % (tab*3, rcode))
+        print('%sbody:' % (tab*4))
+        print('%s%s:' % (tab*5, type_map[rtype]))
+        if ("response_example" in endpoint):
+            print('%sexample:' % (tab*6))
+            # Print each line of endpoint['response_example'] in a separate
+            # line with tabs before it
+            for line in endpoint['response_example'].split("\n"):
+                print('%s%s' % (tab*7, line))
+    else:
+        assert(endpoint['method'] == "POST")
 
 #===============================================================================
 # print_params ()
 #===============================================================================
 def print_params(dictionary, title):
     if len(dictionary) > 0:
-        print '%s%s:' % (tab*2, title)
+        print('%s%s:' % (tab*2, title))
         for param in dictionary:
-            print '%s%s:' % (tab*3, param['name'])
-            print '%stype: %s' % (tab*4, param['type'].lower())
+            print('%s%s:' % (tab*3, param['name']))
+            print('%stype: %s' % (tab*4, param['type'].lower()))
             print_if_key_exists(tab*4, param, 'description')
             print_if_key_exists(tab*4, param, 'example')
             print_if_key_exists(tab*4, param, 'required')
@@ -88,7 +96,7 @@ def print_params(dictionary, title):
 #===============================================================================
 def main():
     if (len(sys.argv) != 2):
-        print 'Syntax: %s <file.json>' % sys.argv[0]
+        print('Syntax: %s <file.json>' % sys.argv[0])
         sys.exit(1)
     inputfile = sys.argv[1]
 
@@ -102,8 +110,8 @@ def main():
                 if ('endpoints' not in api or api['endpoints'] == []):
                     continue
 
-                print '#%RAML 0.8'
-                print ''
+                print('#%RAML 0.8')
+                print('')
                 print_api_description(api)
 
                 for endpoint in api['endpoints']:
@@ -131,11 +139,12 @@ def main():
 
                     print_endpoint_response(endpoint)
 
-                print '========================================================='
+                print('=========================================================')
             except:
-                print '*** ERROR! ***'
-                traceback.print_exc(file=sys.stdout)
-                print '========================================================='
+                print('*** ERROR: ***')
+                print('=========================================================')
+                print('\n*** ERROR: %s ***' % (api['mashape_url']), file=sys.stderr)
+                traceback.print_exc()
 
 if __name__ == '__main__':
     main()
