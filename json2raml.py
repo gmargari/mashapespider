@@ -77,8 +77,6 @@ def print_endpoint_response(endpoint):
             # line with tabs before it
             for line in endpoint['response_example'].split("\n"):
                 print('%s%s' % (tab*7, line))
-    else:
-        assert(endpoint['method'] == "POST")
 
 #===============================================================================
 # print_params ()
@@ -140,6 +138,10 @@ def main():
                     print_params(body_params, 'body')
 
                     print_endpoint_response(endpoint)
+
+                    if ('response' not in endpoint and endpoint['method'] == "GET"):
+                        print('\n*** WARNING: %s ***' % (api['mashape_url']), file=sys.stderr)
+                        print('method for %s is GET but no response defined' % (endpoint['route']), file=sys.stderr)
 
                 print('=========================================================')
             except:
