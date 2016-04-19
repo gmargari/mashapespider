@@ -133,7 +133,7 @@ def main():
                     sys.stdout = open(out_filename, "w")
                 except IOError:
                     traceback.print_exc()
-                    sys.exit(1)
+                    break
 
                 print_api_header()
                 print_api_description(api)
