@@ -4,10 +4,10 @@ from __future__ import print_function
 import json
 import sys
 import re
+import os
 import collections
 import traceback
 
-outfolder = "/tmp/raml/"
 tab = '    '
 type_map = {
     "JSON": "application/json",
@@ -120,10 +120,15 @@ def print_params(dictionary, title):
 # main ()
 #===============================================================================
 def main():
-    if (len(sys.argv) != 2):
-        print('Syntax: %s <file.json>' % sys.argv[0])
+    if (len(sys.argv) != 3):
+        print('Syntax: %s <file.json> <output_folder>' % sys.argv[0])
         sys.exit(1)
     inputfile = sys.argv[1]
+    outfolder = sys.argv[2]
+
+    if (not os.path.isdir(outfolder)):
+        print('Folder %s does not exist' % outfolder)
+        sys.exit(1)
 
     with open(inputfile) as apisfile:
         apis = json.load(apisfile)
