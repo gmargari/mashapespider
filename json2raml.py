@@ -21,6 +21,7 @@ type_map = {
 #===============================================================================
 def print_if_key_exists(space, dictionary, key):
     if (key in dictionary):
+        # If value contains multiple lines
         if (dictionary[key] and dictionary[key].find("\n") != -1):
             assert(key == "example")
             print('%s%s: |' % (space, key))
@@ -179,12 +180,12 @@ def main():
                     print_endpoint_response(endpoint)
 
                     if ('response' not in endpoint and endpoint['method'] == "GET"):
-                        print('\n*** WARNING: %s ***' % (api['mashape_url']), file=sys.stderr)
+                        print('*** WARNING: %s ***' % (api['mashape_url']), file=sys.stderr)
                         print('method for %s is GET but no response defined' % (endpoint['route']), file=sys.stderr)
 
                 print_api_footer()
             except:
-                print('\n*** ERROR: %s ***' % (api['mashape_url']), file=sys.stderr)
+                print('*** ERROR: %s ***' % (api['mashape_url']), file=sys.stderr)
                 traceback.print_exc()
             finally:
                 # Reset stdout
