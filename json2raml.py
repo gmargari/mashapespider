@@ -7,6 +7,7 @@ import re
 import collections
 import traceback
 
+outfolder = "/tmp/raml/"
 tab = '    '
 type_map = {
     "JSON": "application/json",
@@ -51,7 +52,7 @@ def print_api_header():
 # print_api_footer ()
 #===============================================================================
 def print_api_footer():
-    print('=========================================================')
+    print('')
 
 #===============================================================================
 # print_api_description ()
@@ -124,6 +125,16 @@ def main():
                 if ('endpoints' not in api or api['endpoints'] == []):
                     continue
 
+                # Redirect stdout to file
+                raml_filename = api['mashape_url'].replace("https://","").replace("http://","").replace("market.mashape.com/","").replace("/",".")
+                out_filename = outfolder + raml_filename + ".raml"
+                print(out_filename)
+                try:
+                    sys.stdout = open(out_filename, "w")
+                except IOError:
+                    traceback.print_exc()
+                    sys.exit(1)
+
                 print_api_header()
                 print_api_description(api)
 
@@ -158,10 +169,13 @@ def main():
 
                 print_api_footer()
             except:
-                print('*** ERROR: ***')
-                print('=========================================================')
                 print('\n*** ERROR: %s ***' % (api['mashape_url']), file=sys.stderr)
                 traceback.print_exc()
+            finally:
+                # Reset stdout
+                if (sys.stdout != sys.__stdout__):
+                    sys.stdout.close()
+                sys.stdout = sys.__stdout__
 
 if __name__ == '__main__':
     main()
