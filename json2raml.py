@@ -21,7 +21,14 @@ type_map = {
 #===============================================================================
 def print_if_key_exists(space, dictionary, key):
     if (key in dictionary):
-        print('%s%s: %s' % (space, key, dictionary[key]))
+        if (dictionary[key] and dictionary[key].find("\n") != -1):
+            assert(key == "example")
+            print('%s%s: |' % (space, key))
+            # Print each line in a separate line with tabs before it
+            for line in dictionary[key].split("\n"):
+                print('%s%s' % (space + tab, line))
+        else:
+            print('%s%s: "%s"' % (space, key, dictionary[key]))
         return True
     return False
 
@@ -33,6 +40,9 @@ def convert(data):
         d = data.encode('utf-8')
         d = d.replace("&lt;", "<").replace("&gt;", ">")
         d = d.replace("&nbsp;", " ").replace("&amp;", "&")
+        d = d.replace("\"", "'")
+        d = d.replace("\t", "    ")
+        d = d.strip()
         return d
     elif isinstance(data, collections.Mapping):
         return dict(map(convert, data.iteritems()))
@@ -73,8 +83,8 @@ def print_endpoint_description(endpoint):
     print('')
     print('%s%s:' % (tab*0, endpoint['route']))
     print('%s%s:' % (tab*1, endpoint['method'].lower()))
-    print('%sdisplayName: %s' % (tab*2, endpoint['name']))  # extra
-    print('%sdescription: %s' % (tab*2, endpoint['description']))
+    print('%sdisplayName: "%s"' % (tab*2, endpoint['name']))  # extra
+    print('%sdescription: "%s"' % (tab*2, endpoint['description']))
 
 #===============================================================================
 # print_endpoint_response ()
@@ -87,7 +97,7 @@ def print_endpoint_response(endpoint):
         print('%sbody:' % (tab*4))
         print('%s%s:' % (tab*5, type_map[rtype]))
         if ("response_example" in endpoint):
-            print('%sexample:' % (tab*6))
+            print('%sexample: |' % (tab*6))
             # Print each line of endpoint['response_example'] in a separate
             # line with tabs before it
             for line in endpoint['response_example'].split("\n"):
@@ -159,7 +169,7 @@ def main():
                     print_params(uri_params, 'uriParameters')
                     print_params(query_params, 'queryParameters')
                     print_params(payload_params, 'bodyBinaryParameters')  ## *** ## *** ## *** ## *** ## *** ##
-                    print_params(body_params, 'body')
+                    print_params(body_params, 'queryParameters')
 
                     print_endpoint_response(endpoint)
 
