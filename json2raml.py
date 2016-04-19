@@ -30,7 +30,8 @@ def print_if_key_exists(space, dictionary, key):
 def convert(data):
     if isinstance(data, basestring):
         d = data.encode('utf-8')
-        d = d.replace("&lt;", "<").replace("&gt;", ">").replace("&nbsp;", " ")
+        d = d.replace("&lt;", "<").replace("&gt;", ">")
+        d = d.replace("&nbsp;", " ").replace("&amp;", "&")
         return d
     elif isinstance(data, collections.Mapping):
         return dict(map(convert, data.iteritems()))
