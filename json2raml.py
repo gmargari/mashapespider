@@ -41,6 +41,19 @@ def convert(data):
         return data
 
 #===============================================================================
+# print_api_header ()
+#===============================================================================
+def print_api_header():
+    print('#%RAML 0.8')
+    print('')
+
+#===============================================================================
+# print_api_footer ()
+#===============================================================================
+def print_api_footer():
+    print('=========================================================')
+
+#===============================================================================
 # print_api_description ()
 #===============================================================================
 def print_api_description(api):
@@ -111,8 +124,7 @@ def main():
                 if ('endpoints' not in api or api['endpoints'] == []):
                     continue
 
-                print('#%RAML 0.8')
-                print('')
+                print_api_header()
                 print_api_description(api)
 
                 for endpoint in api['endpoints']:
@@ -144,7 +156,7 @@ def main():
                         print('\n*** WARNING: %s ***' % (api['mashape_url']), file=sys.stderr)
                         print('method for %s is GET but no response defined' % (endpoint['route']), file=sys.stderr)
 
-                print('=========================================================')
+                print_api_footer()
             except:
                 print('*** ERROR: ***')
                 print('=========================================================')
