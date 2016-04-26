@@ -143,7 +143,7 @@ def main():
 
                 # Redirect stdout to file
                 raml_filename = api['mashape_url'].replace("https://","").replace("http://","").replace("market.mashape.com/","").replace("/",".")
-                out_filename = outfolder + raml_filename + ".raml"
+                out_filename = outfolder + "/" + raml_filename + ".raml"
                 print(out_filename)
                 try:
                     sys.stdout = open(out_filename, "w")
