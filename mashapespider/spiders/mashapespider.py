@@ -243,7 +243,7 @@ class MashapeWebSpider(scrapy.Spider):
             if (isinstance(varnames_xpaths[key], basestring)):
                 xpath = varnames_xpaths[key]
                 try:
-                    dictionary[varname] = dom_element.find_elements_by_xpath(xpath)[0].text
+                    dictionary[varname] = self.strip_tags(dom_element.find_elements_by_xpath(xpath)[0].get_attribute("innerHTML"))
                 except:
                     pass
 
@@ -276,3 +276,29 @@ class MashapeWebSpider(scrapy.Spider):
         for key in dictionary.keys():
             if (isinstance(dictionary[key], list) and dictionary[key] == []):
                 dictionary.pop(key, None)
+
+    #===========================================================================
+    # MLStripper ()
+    #===========================================================================
+    # from http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
+    class MLStripper(HTMLParser):
+        def __init__(self):
+            self.reset()
+            self.fed = []
+        def handle_data(self, d):
+            self.fed.append(d)
+        def handle_entityref(self, name):
+            self.fed.append('&%s;' % name)
+        def get_data(self):
+            return ''.join(self.fed)
+
+    #===========================================================================
+    # strip_tags ()
+    #===========================================================================
+    # from http://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
+    def strip_tags(self, html):
+        #parser = HTMLParser()
+        #html = parser.unescape(html)
+        s = self.MLStripper()
+        s.feed(html)
+        return s.get_data()
