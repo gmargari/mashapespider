@@ -5,6 +5,7 @@ import sys
 from selenium import webdriver
 from scrapy import signals
 from scrapy.xlib.pydispatch import dispatcher
+from HTMLParser import HTMLParser
 
 #===============================================================================
 # MashapeWebSpider
