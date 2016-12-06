@@ -4,7 +4,7 @@ import json
 import sys
 from selenium import webdriver
 from scrapy import signals
-from scrapy.xlib.pydispatch import dispatcher
+from pydispatch import dispatcher
 from HTMLParser import HTMLParser
 
 #===============================================================================
